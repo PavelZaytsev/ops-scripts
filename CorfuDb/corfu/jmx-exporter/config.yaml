@@ -1,5 +1,5 @@
 startDelaySeconds: 0
-hostPort: corfu-metrics:1099
+hostPort: localhost:1099
 lowercaseOutputName: true
 lowercaseOutputLabelNames: true
 whitelistObjectNames: ["corfu.metrics:*"]

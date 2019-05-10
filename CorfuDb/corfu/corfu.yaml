@@ -1,22 +1,37 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: corfu-service
+# spec:
+#   ports:
+#     - port: 9000
+#       name: corfu
+#   selector:
+#     app: corfu
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: corfu-metrics
+# spec:
+#   ports:
+#     - port: 1099
+#       name: corfu
+#   selector:
+#     app: corfu
+# ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: corfu-service
+  labels:
+    app: corfu-exporter
+  name: corfu-exporter-service
 spec:
   ports:
-    - port: 9000
-      name: corfu
-  selector:
-    app: corfu
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: corfu-metrics
-spec:
-  ports:
-    - port: 1099
-      name: corfu
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      name: corfu-exporter
   selector:
     app: corfu
 ---
@@ -46,7 +61,7 @@ spec:
               mkdir -p /tmp/db_log && java -Dcom.sun.management.jmxremote
               -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false
               -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=1099
-              -Dcom.sun.management.jmxremote.rmi.port=1099 -Djava.rmi.server.hostname=corfu-metrics
+              -Dcom.sun.management.jmxremote.rmi.port=1099 -Djava.rmi.server.hostname=localhost
               -Dcorfu.metrics.collection=True -Dcorfu.metrics.jmxreporting=True -Dcorfu.metrics.jvm=True
               -cp *.jar org.corfudb.infrastructure.CorfuServer -a localhost -l /tmp/db_log -s -d DEBUG 9000
           ports:
@@ -60,3 +75,7 @@ spec:
           args:
             - -c
             - java -jar corfu.jar -c localhost:9000 -t 15 -u s
+        - name: corfu-metrics
+          image: pzaytsev/own:exporter
+          ports:
+            - containerPort: 8080
