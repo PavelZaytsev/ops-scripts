@@ -1,0 +1,18 @@
+startDelaySeconds: 0
+hostPort: corfu-metrics:1099
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+whitelistObjectNames: ["corfu.metrics:*"]
+ssl: false
+rules:
+  - pattern: corfu.metrics<name=(.+)><>Value
+    name: $1_value # values
+    type: GAUGE
+    labels:
+      node: corfu0
+  - pattern: corfu.metrics<name=(.+)><>MeanRate
+    name: $1_mean_rate # mean rates
+    type: GAUGE
+    labels:
+      node: corfu0
+      stat: mean
