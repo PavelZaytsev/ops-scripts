@@ -1,25 +1,27 @@
 # Cloud Native Corfu Initiative
 
 With the creation of cloud, DevOps and containers came the cloud native world.
-The future of computing lies in the cloud-based, containerized, distributed systems, 
+The future of computing lies in the cloud-based, containerized, distributed systems,
 dynamically managed by automation and orchestration.
 
 ### DevOps
 The roles of developers and prodops get blurry when it comes to software ownership.
-There is a trend of developers doing ops with the help of automation and IaC. 
+There is a trend of developers doing ops with the help of automation and IaC.
 
 ### Infrastructure as Code
 With a cloud based approach, tooling, workflows and infrastructure are provisioned by software.
 Software should automate every aspect of cloud: infrastructure, applications, monitoring, CI/CD, etc.
 
 ### The Coming of Containers
-With a cloud based approach came containers. 
+With a cloud based approach came containers.
 - They allow standard packaging and distribution format.
 - They are lightweight, e.g. transfer of images across the network is fast.
 - They are fairly fast, running directly on the real CPU with no virtualization overhead.
 - Container environment is application-centric, no need to pull unrelated programs and libraries we don't use.
-- Most importantly, container is not only the unit of deployment and packaging, its the unit of reuse, 
-the same container can bec used as a component of many different services. 
+- Most importantly, container is not only the unit of deployment and packaging, its the unit of reuse,
+the same container can bec used as a component of many different services.
+
+![containers](https://i.ibb.co/G5dTHmF/containers.jpg "containers")
 
 ### Container Orchestration
 
@@ -31,7 +33,9 @@ the same container can bec used as a component of many different services.
 ### Kubernetes
 
 - Provides out-of-the-box solution to what have been learned in the DevOps community.
-- Automation, failover, centralized logging, monitoring. 
+- Automation, failover, centralized logging, monitoring.
+
+![dashboard](https://i.ibb.co/LZ2xzm9/kuber-dash.png "dashboard")
 
 ### Cloud Native
 - Shorthand way of talking about modern application and services that take advantage of cloud, containers and orchestration as a part of microservice architecture.
@@ -39,7 +43,8 @@ the same container can bec used as a component of many different services.
 
 ### Our Use Cases
 
-* Standardized approach to manage the application lifecycle. 
+![pods](https://i.ibb.co/0Xkwc57/kuber-pods.png "pods")
+* Standardized approach to manage the application lifecycle.
     - K8s provides a way to automate all ops part of the development.
 * Development, Integration, Staging environments:
     - K8s supports a concept of namespaces.
@@ -47,10 +52,9 @@ the same container can bec used as a component of many different services.
 * Different tools available out-of-the-box for CI/CD integrated with k8s environment:
     - Jenkins
     - Gocd
-    - Travis
 * IaC:
     - All infrastructure and tooling are written in code.
-    - Entire Infrastructures can be versioned (helm). 
+    - Entire Infrastructures can be versioned (helm).
 * Monitoring components (demo):
     - Metrics (Prometheus + Grafana):
         - Expose needed metrics via JMX exporter from Corfu.
@@ -65,7 +69,7 @@ the same container can bec used as a component of many different services.
     - Distributed Tracing (Jaeger):
         - Instrument the Corfu code.
         - Trace the requests.
-        - Store in the persistent storage. 
+        - Store in the persistent storage.
         - Debug distributed transactions by utilizing context propagation.
     - Helps with:
         - Developer productivity.
@@ -74,3 +78,5 @@ the same container can bec used as a component of many different services.
         - Distributed testing.
         - Chaos testing.
         - etc.
+
+![monitoring](https://i.ibb.co/HY0LpC1/monitoring.png "monitoring")
