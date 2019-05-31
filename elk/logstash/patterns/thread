@@ -1,1 +1,1 @@
-THREAD [a-zA-z]+-[0-9]+
+THREAD [a-zA-Z0-9-]+
