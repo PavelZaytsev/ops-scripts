@@ -13,7 +13,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ES_JAVA_OPTS: "-Xmx3g -Xms3g"
       ELASTIC_PASSWORD: changeme
     networks:
       - elk
@@ -27,12 +27,13 @@ services:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
       - ./logstash/patterns:/usr/share/logstash/patterns:ro
+      - ./logstash/templates:/usr/share/logstash/templates
       - ./data:/usr/share/logstash/data
     ports:
       - "5000:5000"
       - "9600:9600"
     environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LS_JAVA_OPTS: "-Xmx2g -Xms2g"
     networks:
       - elk
     depends_on:
