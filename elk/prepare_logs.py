@@ -142,7 +142,7 @@ else:
 
         print('Moving corfu logs to a separate directory')
 
-        top_dir = '/'.join([data_path, support_bundle])
+        top_dir = '/'.join([data_path, os.path.splitext(support_bundle)[0]])
 
         prepare_log_directory(top_dir, ip, corfu_log_dir)
 
