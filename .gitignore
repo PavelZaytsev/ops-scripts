@@ -1,4 +1,5 @@
 .DS_Store
 .idea
 elk/data/*
+elk/elasticdata/*
 venv/
