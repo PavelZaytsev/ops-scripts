@@ -11,14 +11,32 @@ arguments = sys.argv
 
 
 def unarchive_tar(path, data_path):
-    with tarfile.open(path) as archive:
-        print(f'Extracting {path}...')
-        members = archive.getmembers()
-        if not members:
-            raise tarfile.TarError('Archive is empty')
-        archive.extractall(path=data_path)
-        archive_name = members[0].name.split('/')[0]
-        return archive_name
+    processed = []
+    unarchived = []
+    unarchive_tar_rec(path, data_path, processed, unarchived)
+    if not unarchived:
+        raise ValueError(f'Nothing has been processed for {path}')
+    else:
+        return unarchived
+
+
+def unarchive_tar_rec(path, data_path, processed, unarchived):
+    if os.path.isfile(path) and tarfile.is_tarfile(path):
+        processed.append(path)
+        with tarfile.open(path) as archive:
+            print(f'Extracting {path}...')
+            archive.extractall(path=data_path)
+            members = archive.getmembers()
+            for member in members:
+                member_path = '/'.join([data_path, member.name])
+                if '/' not in member.name and member.name not in unarchived and os.path.isdir(
+                        member_path):
+                    unarchived.append(member.name)
+                if member_path not in processed \
+                        and os.path.isfile(member_path) \
+                        and tarfile.is_tarfile(member_path) \
+                        and os.path.splitext(member_path)[1] in ['.tgz', '.tar', '.gzip']:
+                    unarchive_tar_rec(member_path, data_path, processed, unarchived)
 
 
 def unarchive_gzip(path, data_path):
