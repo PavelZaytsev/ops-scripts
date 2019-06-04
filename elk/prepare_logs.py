@@ -74,6 +74,8 @@ def unzip_corfu_logs(corfu_path):
 
 
 def prepare_log_directory(data_path, ip, corfu_path):
+    if not os.path.isdir(data_path):
+        os.mkdir(data_path)
     dir_name = '/'.join([data_path, ip])
     if not os.path.isdir(dir_name):
         try:
@@ -140,6 +142,8 @@ else:
 
         print('Moving corfu logs to a separate directory')
 
-        prepare_log_directory(data_path, ip, corfu_log_dir)
+        top_dir = '/'.join([data_path, support_bundle])
+
+        prepare_log_directory(top_dir, ip, corfu_log_dir)
 
     print('Corfu logs are ready for stashing')
