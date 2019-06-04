@@ -96,6 +96,7 @@ if len(arguments) < 2:
     raise ValueError('support bundle archive is required')
 
 else:
+    # TODO: remove dirs when done
     support_bundle = arguments[1]
     data_path = '/'.join([os.getcwd(), 'data'])
     path = '/'.join([data_path, support_bundle])
@@ -107,34 +108,38 @@ else:
     if not tarfile.is_tarfile(path):
         raise tarfile.TarError(f'support bundle {support_bundle} should be a tar archive')
 
-    archive_name = unarchive_tar(path, data_path)
-    print(f'Found: {archive_name}')
+    unarchived_dirs = unarchive_tar(path, data_path)
 
-    archive_path = '/'.join([data_path, archive_name])
-    system_path = '/'.join([archive_path, 'system'])
+    for archive_name in unarchived_dirs:
+        print(f'Found: {archive_name}')
 
-    if not os.path.isdir(system_path):
-        raise FileNotFoundError('System directory is not found in the bundle')
+        archive_path = '/'.join([data_path, archive_name])
+        system_path = '/'.join([archive_path, 'system'])
 
-    ifconfig = '/'.join([system_path, 'ifconfig_-a'])
+        if not os.path.isdir(system_path):
+            raise FileNotFoundError('System directory is not found in the bundle')
 
-    if not os.path.isfile(ifconfig):
-        raise FileNotFoundError('ifconfig file not found in the system directory')
+        ifconfig = '/'.join([system_path, 'ifconfig_-a'])
 
-    print('Extracting this bundles ip')
+        if not os.path.isfile(ifconfig):
+            raise FileNotFoundError('ifconfig file not found in the system directory')
 
-    ip = get_bundles_ip(ifconfig)
-    print(f'Found ip: {ip}')
+        print('Extracting this bundles ip')
 
-    corfu_log_dir = '/'.join([archive_path, 'var', 'log', 'corfu'])
+        ip = get_bundles_ip(ifconfig)
+        print(f'Found ip: {ip}')
 
-    if not os.path.isdir(corfu_log_dir):
-        raise FileNotFoundError('Corfu log directory does not exist')
+        corfu_log_dir = '/'.join([archive_path, 'var', 'log', 'corfu'])
 
-    print('Unzipping corfu logs if any')
+        if not os.path.isdir(corfu_log_dir):
+            raise FileNotFoundError('Corfu log directory does not exist')
 
-    unzip_corfu_logs(corfu_log_dir)
+        print('Unzipping corfu logs if any')
 
-    print('Moving corfu logs to a separate directory')
+        unzip_corfu_logs(corfu_log_dir)
 
-    prepare_log_directory(data_path, ip, corfu_log_dir)
+        print('Moving corfu logs to a separate directory')
+
+        prepare_log_directory(data_path, ip, corfu_log_dir)
+
+    print('Corfu logs are ready for stashing')
