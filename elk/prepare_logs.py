@@ -6,6 +6,8 @@ import tarfile
 import glob
 import gzip
 import shutil
+import json
+from pathlib import Path
 
 arguments = sys.argv
 
@@ -35,7 +37,8 @@ def unarchive_tar_rec(path, data_path, processed, unarchived):
                 if member_path not in processed \
                         and os.path.isfile(member_path) \
                         and tarfile.is_tarfile(member_path) \
-                        and os.path.splitext(member_path)[1] in ['.tgz', '.tar', '.gzip']:
+                        and os.path.splitext(member_path)[1] in ['.tgz', '.tar', '.gzip',
+                                                                 '.gz']:
                     unarchive_tar_rec(member_path, data_path, processed, unarchived)
 
 
@@ -92,6 +95,27 @@ def prepare_log_directory(data_path, ip, corfu_path):
         except FileNotFoundError as fnfe:
             print(str(fnfe))
             raise
+
+
+def prepare_layout(data_path, layout_path):
+    pattern = 'LAYOUTS_*.ds'
+    all_layouts = glob.glob('/'.join([layout_path, pattern]))
+    if not all_layouts:
+        print('No layouts in dir')
+        return
+    for f in all_layouts:
+        buffer = []
+        with open(f, 'rb') as file:
+            content = file.read(4)
+            while content != b'':
+                content = file.read(1)
+                buffer.append(content)
+            string = str(b''.join(buffer), 'utf-8')
+            json_string = json.loads(string)
+        file_name = f.split('/')[-1]
+        with open('/'.join([data_path, '{}.json'.format(os.path.splitext(file_name)[0])]),
+                  'w') as file:
+            json.dump(json_string, file, indent=4)
 
 
 if len(arguments) < 2:
