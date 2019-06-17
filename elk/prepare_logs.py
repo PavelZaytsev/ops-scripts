@@ -137,37 +137,38 @@ else:
     unarchived_dirs = unarchive_tar(path, data_path)
 
     for archive_name in unarchived_dirs:
-        print(f'Found: {archive_name}')
+        if 'nsx_manager' in archive_name:
+            print(f'Found: {archive_name}')
 
-        archive_path = '/'.join([data_path, archive_name])
-        system_path = '/'.join([archive_path, 'system'])
+            archive_path = '/'.join([data_path, archive_name])
+            system_path = '/'.join([archive_path, 'system'])
 
-        if not os.path.isdir(system_path):
-            raise FileNotFoundError('System directory is not found in the bundle')
+            if not os.path.isdir(system_path):
+                raise FileNotFoundError('System directory is not found in the bundle')
 
-        ifconfig = '/'.join([system_path, 'ifconfig_-a'])
+            ifconfig = '/'.join([system_path, 'ifconfig_-a'])
 
-        if not os.path.isfile(ifconfig):
-            raise FileNotFoundError('ifconfig file not found in the system directory')
+            if not os.path.isfile(ifconfig):
+                raise FileNotFoundError('ifconfig file not found in the system directory')
 
-        print('Extracting this bundles ip')
+            print('Extracting this bundles ip')
 
-        ip = get_bundles_ip(ifconfig)
-        print(f'Found ip: {ip}')
+            ip = get_bundles_ip(ifconfig)
+            print(f'Found ip: {ip}')
 
-        corfu_log_dir = '/'.join([archive_path, 'var', 'log', 'corfu'])
+            corfu_log_dir = '/'.join([archive_path, 'var', 'log', 'corfu'])
 
-        if not os.path.isdir(corfu_log_dir):
-            raise FileNotFoundError('Corfu log directory does not exist')
+            if not os.path.isdir(corfu_log_dir):
+                raise FileNotFoundError('Corfu log directory does not exist')
 
-        print('Unzipping corfu logs if any')
+            print('Unzipping corfu logs if any')
 
-        unzip_corfu_logs(corfu_log_dir)
+            unzip_corfu_logs(corfu_log_dir)
 
-        print('Moving corfu logs to a separate directory')
+            print('Moving corfu logs to a separate directory')
 
-        top_dir = '/'.join([data_path, os.path.splitext(support_bundle)[0]])
+            top_dir = '/'.join([data_path, os.path.splitext(support_bundle)[0]])
 
-        prepare_log_directory(top_dir, ip, corfu_log_dir)
+            prepare_log_directory(top_dir, ip, corfu_log_dir)
 
     print('Corfu logs are ready for stashing')
