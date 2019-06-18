@@ -1,4 +1,4 @@
 .DS_Store
 .idea
-elk/build/**/*
+elk/build/**
 venv/
