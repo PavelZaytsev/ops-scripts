@@ -129,10 +129,10 @@ else:
     path_exists = os.path.isfile(path)
 
     if not path_exists:
-        raise FileNotFoundError(f'support bundle {support_bundle} does not exists')
+        raise FileNotFoundError(f'support bundle {path} does not exists')
 
     if not tarfile.is_tarfile(path):
-        raise tarfile.TarError(f'support bundle {support_bundle} should be a tar archive')
+        raise tarfile.TarError(f'support bundle {path} should be a tar archive')
 
     unarchived_dirs = unarchive_tar(path, data_path)
 

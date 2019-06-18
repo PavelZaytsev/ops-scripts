@@ -1,6 +1,4 @@
 .DS_Store
 .idea
-elk/build/**
-elk/data/*
-elk/elasticdata/*
+elk/build/**/*
 venv/
