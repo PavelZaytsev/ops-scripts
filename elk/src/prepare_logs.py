@@ -27,7 +27,7 @@ def unarchive_tar_rec(path, data_path, processed, unarchived):
     if os.path.isfile(path) and tarfile.is_tarfile(path):
         processed.append(path)
         with tarfile.open(path) as archive:
-            print(f'Extracting {path}...')
+            print(f'Extracting x {path}...')
             archive.extractall(path=data_path)
             members = archive.getmembers()
             for member in members:
@@ -64,38 +64,37 @@ def get_bundles_ip(ifconfig_path):
         return ip
 
 
-def unzip_corfu_logs(corfu_path):
-    match_path = '/'.join([corfu_path, 'corfu.9000.*log.gz'])
+def unzip_logs(path, pattern):
+    match_path = '/'.join([path, pattern])
     matched_files = glob.glob(match_path)
     if not matched_files:
-        print('No corfu archive logs found')
+        print(f'No {pattern} archive logs found')
         return
     matched_str = '\n'.join(matched_files)
-    print(f'Found the following zipped corfu log files:\n{matched_str}')
+    print(f'Found the following zipped log files:\n{matched_str}')
 
-    for corfu_file in matched_files:
-        unarchive_gzip(corfu_file, corfu_path)
+    for file in matched_files:
+        unarchive_gzip(file, path)
 
 
-def prepare_log_directory(data_path, ip, corfu_path):
+def prepare_log_directory(data_path, ip, path):
     if not os.path.isdir(data_path):
         os.mkdir(data_path)
     dir_name = '/'.join([data_path, ip])
-    if not os.path.isdir(dir_name):
-        try:
-            os.mkdir(dir_name)
-            match_path = '/'.join([corfu_path, 'corfu.9000.*log'])
-            corfu_log_files = glob.glob(match_path)
-            if not corfu_log_files:
-                raise FileNotFoundError('No matched corfu log files')
-            for old_file_name in corfu_log_files:
-                file_name = old_file_name.split('/')[-1]
-                new_file_name = '/'.join([dir_name, file_name])
-                print(f'Moving to {new_file_name}')
-                shutil.move(old_file_name, new_file_name)
-        except FileNotFoundError as fnfe:
-            print(str(fnfe))
-            raise
+    try:
+        if not os.path.isdir(dir_name): os.mkdir(dir_name)
+        match_path = '/'.join([path, '*.log'])
+        log_files = glob.glob(match_path)
+        if not log_files:
+            raise FileNotFoundError('No matched log files')
+        for old_file_name in log_files:
+            file_name = old_file_name.split('/')[-1]
+            new_file_name = '/'.join([dir_name, file_name])
+            print(f'Moving to {new_file_name}')
+            shutil.move(old_file_name, new_file_name)
+    except FileNotFoundError as fnfe:
+        print(str(fnfe))
+        raise
 
 
 def prepare_layout(data_path, layout_path):
@@ -158,18 +157,21 @@ else:
             print(f'Found ip: {ip}')
 
             corfu_log_dir = '/'.join([archive_path, 'var', 'log', 'corfu'])
+            proton_log_dir = '/'.join([archive_path, 'var', 'log', 'proton'])
 
             if not os.path.isdir(corfu_log_dir):
                 raise FileNotFoundError('Corfu log directory does not exist')
 
-            print('Unzipping corfu logs if any')
+            print('Unzipping logs if any')
 
-            unzip_corfu_logs(corfu_log_dir)
+            unzip_logs(corfu_log_dir, 'corfu.9000.*log.gz')
+            unzip_logs(proton_log_dir, 'nsxapi.*log.gz')
 
-            print('Moving corfu logs to a separate directory')
+            print('Moving logs to a separate directory')
 
             top_dir = '/'.join(['/output', 'data', os.path.splitext(support_bundle)[0]])
 
             prepare_log_directory(top_dir, ip, corfu_log_dir)
+            prepare_log_directory(top_dir, ip, proton_log_dir)
 
     print('Corfu logs are ready for stashing')
