@@ -27,7 +27,7 @@ def unarchive_tar_rec(path, data_path, processed, unarchived):
     if os.path.isfile(path) and tarfile.is_tarfile(path):
         processed.append(path)
         with tarfile.open(path) as archive:
-            print(f'Extracting x {path}...')
+            print(f'Extracting {path}...')
             archive.extractall(path=data_path)
             members = archive.getmembers()
             for member in members:
@@ -35,12 +35,15 @@ def unarchive_tar_rec(path, data_path, processed, unarchived):
                 if '/' not in member.name and member.name not in unarchived and os.path.isdir(
                         member_path):
                     unarchived.append(member.name)
-                if member_path not in processed \
-                        and os.path.isfile(member_path) \
-                        and tarfile.is_tarfile(member_path) \
-                        and os.path.splitext(member_path)[1] in ['.tgz', '.tar', '.gzip',
-                                                                 '.gz']:
-                    unarchive_tar_rec(member_path, data_path, processed, unarchived)
+                try:
+                    if member_path not in processed \
+                            and os.path.isfile(member_path) \
+                            and tarfile.is_tarfile(member_path) \
+                            and os.path.splitext(member_path)[1] in ['.tgz', '.tar', '.gzip', '.gz']:
+                        unarchive_tar_rec(member_path, data_path, processed, unarchived)
+                except Exception as ex:
+                    print(f'There was an issue processing path {member_path}')
+                    print(f'The exception was {ex}.')
 
 
 def unarchive_gzip(path, data_path):
@@ -77,13 +80,13 @@ def unzip_logs(path, pattern):
         unarchive_gzip(file, path)
 
 
-def prepare_log_directory(data_path, ip, path):
+def prepare_log_directory(data_path, ip, path, pattern):
     if not os.path.isdir(data_path):
         os.mkdir(data_path)
     dir_name = '/'.join([data_path, ip])
     try:
         if not os.path.isdir(dir_name): os.mkdir(dir_name)
-        match_path = '/'.join([path, '*.log'])
+        match_path = '/'.join([path, pattern])
         log_files = glob.glob(match_path)
         if not log_files:
             raise FileNotFoundError('No matched log files')
@@ -171,7 +174,7 @@ else:
 
             top_dir = '/'.join(['/output', 'data', os.path.splitext(support_bundle)[0]])
 
-            prepare_log_directory(top_dir, ip, corfu_log_dir)
-            prepare_log_directory(top_dir, ip, proton_log_dir)
+            prepare_log_directory(top_dir, ip, corfu_log_dir, "corfu.9000*.log")
+            prepare_log_directory(top_dir, ip, proton_log_dir, "nsxapi*.log")
 
     print('Corfu logs are ready for stashing')
