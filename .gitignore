@@ -1,4 +1,5 @@
 .DS_Store
 .idea
 elk/build/**
+elk/.gradle
 venv/
