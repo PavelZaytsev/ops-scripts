@@ -7,11 +7,12 @@ import glob
 import gzip
 import shutil
 import json
+import fnmatch
 from pathlib import Path
 
 arguments = sys.argv
 
-
+ignored_patterns = ['*esx*']
 
 def unarchive_tar(path, data_path):
     processed = []
@@ -24,6 +25,11 @@ def unarchive_tar(path, data_path):
 
 
 def unarchive_tar_rec(path, data_path, processed, unarchived):
+    for pattern in ignored_patterns:
+        if fnmatch.fnmatch(path, pattern):
+            print(f'Skipping {path}...')
+            return None
+
     if os.path.isfile(path) and tarfile.is_tarfile(path):
         processed.append(path)
         with tarfile.open(path) as archive:
@@ -161,6 +167,7 @@ else:
 
             corfu_log_dir = '/'.join([archive_path, 'var', 'log', 'corfu'])
             proton_log_dir = '/'.join([archive_path, 'var', 'log', 'proton'])
+            ccp_log_dir = '/'.join([archive_path, 'var', 'log', 'cloudnet'])
 
             if not os.path.isdir(corfu_log_dir):
                 raise FileNotFoundError('Corfu log directory does not exist')
@@ -169,6 +176,7 @@ else:
 
             unzip_logs(corfu_log_dir, 'corfu.9000.*log.gz')
             unzip_logs(proton_log_dir, 'nsxapi.*log.gz')
+            unzip_logs(ccp_log_dir, 'nsx-ccp.*log.gz')
 
             print('Moving logs to a separate directory')
 
@@ -176,5 +184,6 @@ else:
 
             prepare_log_directory(top_dir, ip, corfu_log_dir, "corfu.9000*.log")
             prepare_log_directory(top_dir, ip, proton_log_dir, "nsxapi*.log")
+            prepare_log_directory(top_dir, ip, ccp_log_dir, "nsx-ccp.*log")
 
-    print('Corfu logs are ready for stashing')
+    print('Logs are ready for stashing.')
