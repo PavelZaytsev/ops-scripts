@@ -1,5 +1,10 @@
 # ELK
 
-To untar the bundle and prepare corfu logs for stashing:
-1. Put bundle in the build/data directory (its name will be the index name) 
+Prepare logs for stashing:
+
+${bundle_name} - tar file which contains support bundles.
+
+0. execute ./init.sh
+1. Put the bundle in the build/data directory (the tar file name will be the index name in elk) 
 2. Run `./support-bundle-tools.sh <bundle_name>`.
+3. Run elk-up.sh
