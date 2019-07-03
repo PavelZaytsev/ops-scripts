@@ -11,5 +11,8 @@ xpack.monitoring.enabled: true
 xpack.monitoring.elasticsearch.username: elastic
 xpack.monitoring.elasticsearch.password: changeme
 
-# num_cores x 2
-pipeline.workers: 24
+# num_cores x 4
+pipeline.workers: 48
+
+# default x 8
+pipeline.batch.size: 1000
