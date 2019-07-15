@@ -13,11 +13,6 @@ password = 'changeme'
 arguments = sys.argv
 url = 'http://localhost:9200'
 
-"""
-Should be bug id
-
-"""
-
 
 def create_index(index_name):
     try:
@@ -63,10 +58,10 @@ def index_record(index_name, record):
         raise
 
 
-def index_layouts(layout_path, index_name):
+def index_layouts(bundle_path):
+    index_name = bundle_path.split('/')[-1]
     create_index(index_name)
-    pattern = 'LAYOUTS_*.ds'
-    all_layouts = glob.glob('/'.join([layout_path, pattern]))
+    all_layouts = aggregate_layouts(bundle_path)
     if not all_layouts:
         raise FileNotFoundError('Layouts are missing in the directory')
     print('Indexing layouts')
@@ -84,9 +79,29 @@ def index_layouts(layout_path, index_name):
             index_record(index_name, json_string)
 
 
-if len(arguments) < 3:
-    print('Path and index name are required')
+def aggregate_layouts(bundle_path):
+    try:
+        dirs = next(os.walk(bundle_path))
+        root_dir, child_dirs = (dirs[0], dirs[1])
+        layout_paths = ['/'.join([root_dir, child_dir, 'config', 'corfu']) for child_dir in
+                        child_dirs if 'nsx_manager' in child_dir]
+        pattern = 'LAYOUTS_*.ds'
+        all_layouts = [glob.glob('/'.join([layout_path, pattern])) for layout_path in layout_paths]
+        unique_layouts = set()
+        result = []
+        for sublist_layout in all_layouts:
+            for layout in sublist_layout:
+                layout_file = layout.split('/')[-1]
+                if layout_file not in unique_layouts:
+                    result.append(layout)
+                    unique_layouts.add(layout_file)
+        return result
+    except FileNotFoundError as e:
+        raise ('This bundle path does not exist', e)
+
+
+if len(arguments) < 2:
+    print('Bundle absolute directory name is required (decompressed)')
 else:
-    layout_path = arguments[1].strip()
-    index_name = arguments[2].strip()
-    index_layouts(layout_path, index_name)
+    bundle_path = arguments[1].strip()
+    index_layouts(bundle_path)
