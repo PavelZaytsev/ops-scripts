@@ -2,4 +2,4 @@
 
 cd build/docker-elk
 
-docker-compose up
+docker-compose up -d
