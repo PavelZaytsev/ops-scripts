@@ -19,10 +19,9 @@ class SupportBundleManager {
                 StandardOpenOption.WRITE,
                 StandardOpenOption.CREATE_NEW
         )
+
         val bundleFile = FileChannel.open(directory, options)
         bundleFile.transferFrom(bundleChannel, 0, Long.MAX_VALUE)
         bundleFile.close()
-
-
     }
 }

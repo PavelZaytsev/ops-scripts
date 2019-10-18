@@ -11,5 +11,9 @@ ${bundle_name} - tar file which contains support bundles.
 
 #New functionality
 Download a tgz support bundle into data directory
-./gradlew processing -Purl=http://url.com/123.tgz -Pbug=123
+./gradlew processing -Pbug=my_bug -Purl=http://url.com/123.tgz -Pbundle=123
 
+### Unpack support bundle
+./gradlew unpack -Pbug=my_bag -Pbundle=1.tgz
+./support-bundle-tools.sh
+./elk-up.sh

@@ -5,9 +5,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import java.nio.file.Paths
 
 fun main(args : Array<String>) {
-    if(args.isEmpty()){
-        throw IllegalArgumentException("empty parameters")
-    }
+    require(args.isNotEmpty()) { "empty parameters" }
 
     println("Start processing! Parameters: ${args.joinToString()}")
 
@@ -16,11 +14,16 @@ fun main(args : Array<String>) {
 
 class Processing : CliktCommand() {
     private val bug: String by argument(help = "bug")
+    private val bundle: String by argument(help = "bundle")
     private val url: String by argument(help = "support bundle url")
 
     override fun run() {
         val supportBundleManager = SupportBundleManager()
-        supportBundleManager.download(url, Paths.get("build", "data", "$bug.tgz"))
+        val dataDir = Paths.get("build", "data", bug)
+
+        dataDir.toFile().mkdirs();
+
+        supportBundleManager.download(url, dataDir.resolve("$bundle.tgz"))
     }
 }
 
