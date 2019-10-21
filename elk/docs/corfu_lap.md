@@ -18,6 +18,15 @@ transforms it, and then sends it to a "stash" like Elasticsearch.
 ### Visualization
 Kibana provides powerful and flexible UI and QueryEngine.
 
+Basic Kibana UI :
+
+![ui_example](img/kibana_ui.jpg)
+
+
+Kibana multiple filters with custom date range
+
+![kibana custom UI](img/kibana_ui_multiple_filter.jpg)
+
 ### Corfu Dashboards
  - The corfu management dashboard - contains visual components that show the corfu cluster state.
  Right now it contains information about failed and successful trimming operations 
