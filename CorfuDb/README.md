@@ -80,3 +80,5 @@ the same container can bec used as a component of many different services.
         - etc.
 
 ![monitoring](https://i.ibb.co/HY0LpC1/monitoring.png "monitoring")
+
+[Install Kubernetes on VSphere](https://blog.inkubate.io/install-and-manage-automatically-a-kubernetes-cluster-on-vmware-vsphere-with-terraform-and-kubespray/)
