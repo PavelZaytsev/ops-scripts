@@ -3,3 +3,4 @@
 elk/build/**
 elk/.gradle
 venv/
+/elk/build/docker-elk/**

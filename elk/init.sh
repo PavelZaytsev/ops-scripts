@@ -6,9 +6,11 @@ rm -rf build/docker-elk/
 
 git clone https://github.com/deviantony/docker-elk.git build/docker-elk
 cd build/docker-elk
-git checkout 99f69fe45ca41f7c5355da7713a985791c07592e
+#git checkout b000267d86655
 
 cd ../../
+
+docker volume rm docker-elk_elasticsearch
 
 #copy configs into build dir
 cp -R src/logstash build/docker-elk
